@@ -1,0 +1,228 @@
+﻿<Window x:Class="DailyMealProject.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DailyMealProject"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="700" Width="1600">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Grid.Column="0" Margin="10" Background="FloralWhite" Name="userInfo">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+            </Grid>
+            
+            <!--Characteristics-->
+            <StackPanel Grid.Row="0" Margin="10">
+                <TextBlock TextAlignment="Center" FontWeight="Bold" FontSize="22">Характеристики</TextBlock>
+                <StackPanel Orientation="Horizontal"  Margin="5">
+                    <TextBlock Style="{StaticResource tbInfoStyle}">Вес:</TextBlock>
+                    <TextBox Name="weightInfo" TextChanged="TextBox_TextChanged" Style="{StaticResource tboxInfoStyle}"></TextBox>
+                    <TextBlock Style="{StaticResource tbInfoStyle}" TextAlignment="Left" Width="30">кг</TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  Margin="5">
+                    <TextBlock Style="{StaticResource tbInfoStyle}">Рост:</TextBlock>
+                    <TextBox Name="heightInfo" TextChanged="TextBox_TextChanged" Style="{StaticResource tboxInfoStyle}"></TextBox>
+                    <TextBlock Style="{StaticResource tbInfoStyle}" TextAlignment="Left" Width="30">см</TextBlock>
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  Margin="5">
+                    <TextBlock Style="{StaticResource tbInfoStyle}">Возраст:</TextBlock>
+                    <TextBox Name="ageInfo" TextChanged="TextBox_TextChanged" Style="{StaticResource tboxInfoStyle}"></TextBox>
+                    <TextBlock Style="{StaticResource tbInfoStyle}" TextAlignment="Left" Width="30">лет</TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  Margin="5">
+                    <TextBlock Style="{StaticResource tbInfoStyle}">BMR:</TextBlock>
+                    <TextBox x:Name="bmrInfo" Style="{StaticResource tboxInfoStyle}"  IsEnabled="False"></TextBox>
+                </StackPanel>
+            </StackPanel>
+            
+            <!--Activity-->
+            <StackPanel Grid.Row="1" Margin="10">
+                <TextBlock TextAlignment="Center"  FontWeight="Bold" FontSize="22">Активность</TextBlock>
+                <StackPanel Margin="5">
+                    <ComboBox SelectionChanged="cmbActivity_SelectionChanged" Name="cmbActivity" Margin="10"></ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  Margin="5">
+                    <TextBlock Style="{StaticResource tbInfoStyle}">ARM:</TextBlock>
+                    <TextBox x:Name="armInfo" Style="{StaticResource tboxInfoStyle}" IsEnabled="False"></TextBox>
+                </StackPanel>
+            </StackPanel>
+            
+            <!--Daily Ration-->
+            <StackPanel Grid.Row="2"  Margin="10">
+                <TextBlock TextAlignment="Center"  FontWeight="Bold" FontSize="22">Суточная норма</TextBlock>
+                <StackPanel Orientation="Horizontal" Margin="5" >
+                    <TextBlock Style="{StaticResource tbInfoStyle}">кКалорий:</TextBlock>
+                    <TextBox x:Name="calInfo" Style="{StaticResource tboxInfoStyle}" ></TextBox>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Margin="10" Background="AntiqueWhite" >
+            <TextBox DockPanel.Dock="Top" Margin="10" Name="txtFilter" TextChanged="txtFilter_TextChanged" />
+           
+            <ListView Name="prodLV" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="10" Height="600" SelectionChanged="prodLV_SelectionChanged" 
+                      MouseDoubleClick="prodLV_MouseDoubleClick">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding Name}" />
+                    </GridView>
+                </ListView.View>
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <Expander IsExpanded="False">
+                                                <Expander.Header>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Name}" FontWeight="DemiBold" Foreground="DarkSlateGray" FontSize="14" VerticalAlignment="Bottom" />
+                                                        <TextBlock Text="{Binding ItemCount}" FontSize="14" Foreground="Gray" FontWeight="Bold" FontStyle="Italic" Margin="10,0,0,0" VerticalAlignment="Bottom" />
+                                                        <TextBlock Text=" штук" FontSize="16" Foreground="Gray" FontStyle="Italic" VerticalAlignment="Bottom" />
+                                                    </StackPanel>
+                                                </Expander.Header>
+                                                <ItemsPresenter />
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" Margin="10" Background="WhiteSmoke">
+            <ComboBox Name="cmbMeals" Margin="10">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <TreeView x:Name="tvRation" Height="250" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10" 
+                      SelectedItemChanged="tvRation_SelectedItemChanged" MouseRightButtonDown="tvRation_MouseRightButtonDown">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Path=Products}" >
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text=" ["/>
+                            <TextBlock Text="{Binding Products.Count}"/>
+                            <TextBlock Text="]"/>
+                        </StackPanel>
+                        <HierarchicalDataTemplate.ItemTemplate>
+
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" />
+                                </StackPanel>
+
+                            </DataTemplate>
+                        </HierarchicalDataTemplate.ItemTemplate>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <TextBox Style="{StaticResource tboxInfoStyle}" Name="addMeal"></TextBox>
+                <Button Width="100" Margin="10" Click="Button_Click">Добавить</Button>
+            </StackPanel>
+            <Button Margin="10" Click="Button_Click_1">Сохранить рацион</Button>
+        </StackPanel>
+
+        <StackPanel Grid.Column="3" Margin="10" Background="LightSlateGray" Name="infoPanel">
+            <TextBlock Margin="10" FontSize="20" FontWeight="DemiBold" FontFamily="Verdana" TextAlignment="Center" Background="Wheat">Информация о продукте</TextBlock>
+            <TextBlock Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}" Margin="10" FontSize="12" Height="25" FontWeight="DemiBold" FontFamily="Verdana" Width="350" TextAlignment="Center" ></TextBlock>
+            <StackPanel Orientation="Horizontal"  Margin="5">
+                <TextBlock Style="{StaticResource tbInfoStyle}">Белки:</TextBlock>
+                <TextBox Text="{Binding Proteins,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource tboxInfoStyle}" IsEnabled="False"  ></TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"  Margin="5">
+                <TextBlock Style="{StaticResource tbInfoStyle}">Жиры:</TextBlock>
+                <TextBox Text="{Binding Fats,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource tboxInfoStyle}" IsEnabled="False"></TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"  Margin="5">
+                <TextBlock Style="{StaticResource tbInfoStyle}">Углеводы:</TextBlock>
+                <TextBox Text="{Binding Carbs,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource tboxInfoStyle}" IsEnabled="False"></TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"  Margin="5">
+                <TextBlock Style="{StaticResource tbInfoStyle}">Калории:</TextBlock>
+                <TextBox Text="{Binding Calories,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource tboxInfoStyle}" IsEnabled="False"></TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"  Margin="5">
+                <TextBlock Style="{StaticResource tbInfoStyle}">Вес:</TextBlock>
+                <TextBox  Text="{Binding Grams,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource tboxInfoStyle}" IsEnabled="False"></TextBox>
+            </StackPanel>
+            <Slider x:Name="sl" Margin="10" Minimum="10" Value="100" Maximum="300" TickFrequency="10" IsSnapToTickEnabled="True" 
+                    TickPlacement="BottomRight"  MouseLeave="sl_MouseLeave"></Slider>
+            <ProgressBar x:Name="pbCalories" Height="20" Minimum="0" Width="300" ></ProgressBar>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource tbInfoStyle}">Максимум: </TextBlock>
+                <TextBox IsEnabled="False" Style="{StaticResource tboxInfoStyle}" x:Name="check"></TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource tbInfoStyle}">Набрано: </TextBlock>
+                <TextBox IsEnabled="False" Style="{StaticResource tboxInfoStyle}" x:Name="check1"></TextBox>
+            </StackPanel>
+            <Button Margin="10" Name="clearButton" Click="clearButton_Click">Clear ration</Button>
+        </StackPanel>
+        
+    </Grid>
+</Window>
+
+
+
+
+<!--<ListBox Height="600" ScrollViewer.VerticalScrollBarVisibility="Visible" x:Name="prodLV" ScrollViewer.CanContentScroll="False">
+    <ListBox.ItemTemplate>
+        <DataTemplate>
+            <Expander MouseDoubleClick="prodLV_MouseDoubleClick">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}" FontWeight="DemiBold" Foreground="DarkSlateGray" FontSize="14" VerticalAlignment="Bottom" />
+                        <TextBlock Text=" [" FontWeight="DemiBold" Foreground="DarkSlateGray" FontSize="14" VerticalAlignment="Bottom" />
+                        <TextBlock Text="{Binding Products.Count}" FontWeight="DemiBold" Foreground="DarkSlateGray" FontSize="14" VerticalAlignment="Bottom" />
+                        <TextBlock Text="]" FontWeight="DemiBold" Foreground="DarkSlateGray" FontSize="14" VerticalAlignment="Bottom" />
+                    </StackPanel>
+                </Expander.Header>
+                <StackPanel >
+                    <ListBox ItemsSource="{Binding Path=Products}" Height="150" Width="300" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+
+                --><!--<ListView ItemsSource="{Binding Path=Products}" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="False">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="name" Width="300" DisplayMemberBinding="{Binding Name}"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>--><!--
+            </Expander>
+        </DataTemplate>
+    </ListBox.ItemTemplate>
+</ListBox>-->
